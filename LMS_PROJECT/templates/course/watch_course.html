@@ -1,0 +1,318 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{{course.title}}
+{% endblock title %}
+
+
+{% block content %}
+<!-- COURSE
+    ================================================== -->
+<div class="mt-15 mt-md-11 pt-md-3">
+    <div class="sidebar-collapse">
+        <a class="text-white bg-primary rounded-right-lg p-4 w-60p h-50p" data-bs-toggle="collapse"
+            href="#sidebarcollapseExample" role="button" aria-expanded="false" aria-controls="sidebarcollapseExample">
+            <!-- Icon -->
+            <svg width="25" height="17" viewBox="0 0 25 17" xmlns="http://www.w3.org/2000/svg">
+                <rect width="25" height="1" fill="currentColor" />
+                <rect y="8" width="15" height="1" fill="currentColor" />
+                <rect y="16" width="20" height="1" fill="currentColor" />
+            </svg>
+
+            <svg width="16" height="17" viewBox="0 0 16 17" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0.142135 2.00015L1.55635 0.585938L15.6985 14.7281L14.2843 16.1423L0.142135 2.00015Z"
+                    fill="currentColor"></path>
+                <path d="M14.1421 1.0001L15.5563 2.41431L1.41421 16.5564L0 15.1422L14.1421 1.0001Z" fill="currentColor">
+                </path>
+            </svg>
+
+        </a>
+
+        <div class="collapse shadow" id="sidebarcollapseExample">
+            <div class="p-5">
+                <!-- Search -->
+                <form class="mt-10 mt-sm-0">
+                    <div class="input-group border rounded">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-sm text-secondary" type="submit">
+                                <!-- Icon -->
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M8.80758 0C3.95121 0 0 3.95121 0 8.80758C0 13.6642 3.95121 17.6152 8.80758 17.6152C13.6642 17.6152 17.6152 13.6642 17.6152 8.80758C17.6152 3.95121 13.6642 0 8.80758 0ZM8.80758 15.9892C4.8477 15.9892 1.62602 12.7675 1.62602 8.80762C1.62602 4.84773 4.8477 1.62602 8.80758 1.62602C12.7675 1.62602 15.9891 4.8477 15.9891 8.80758C15.9891 12.7675 12.7675 15.9892 8.80758 15.9892Z"
+                                        fill="currentColor" />
+                                    <path
+                                        d="M19.762 18.6121L15.1007 13.9509C14.7831 13.6332 14.2687 13.6332 13.9511 13.9509C13.6335 14.2682 13.6335 14.7831 13.9511 15.1005L18.6124 19.7617C18.7712 19.9205 18.9791 19.9999 19.1872 19.9999C19.395 19.9999 19.6032 19.9205 19.762 19.7617C20.0796 19.4444 20.0796 18.9295 19.762 18.6121Z"
+                                        fill="currentColor" />
+                                </svg>
+
+                            </button>
+                        </div>
+                        <input class="form-control form-control-sm border-0 ps-0" type="search"
+                            placeholder="Search item" aria-label="Search">
+                    </div>
+                </form>
+            </div>
+
+            <style>
+                .faded-video {
+                    opacity: 0.5;
+                    pointer-events: none;
+                }
+            </style>
+
+            <div id="accordionCurriculum" class="sidebar-collapse-scroll">
+                {% for lesson in course.lesson_set.all %}
+                <div class="overflow-hidden">
+                    <div class="d-flex align-items-center" id="curriculumheadingOne">
+                        <h5 class="mb-0 w-100">
+                            <button
+                                class="d-flex align-items-center p-5 min-height-80 text-dark fw-medium collapse-accordion-toggle line-height-one"
+                                type="button" data-bs-toggle="collapse" data-bs-target="#id-{{lesson.id}}"
+                                aria-expanded="true" aria-controls="id-{{lesson.id}}">
+                                <span class="me-4 text-dark d-flex">
+                                    <!-- Icons for open and close -->
+                                    <svg width="15" height="2">
+                                        <rect width="15" height="2" fill="currentColor" />
+                                    </svg>
+                                    <svg width="15" height="16">
+                                        <path d="M0 7H15V9H0V7Z" fill="currentColor" />
+                                        <path d="M6 16L6 0L8 0L8 16H6Z" fill="currentColor" />
+                                    </svg>
+                                </span>
+                                {{lesson.name}}
+                            </button>
+                        </h5>
+                    </div>
+
+                    <div id="id-{{lesson.id}}" class="collapse show" aria-labelledby="curriculumheadingOne"
+                        data-parent="#accordionCurriculum">
+                        {% for video in lesson.video_set.all %}
+                        <div class="border-top px-5 py-4 min-height-70 d-md-flex align-items-center {% if quiz_video_id and video.id > quiz_video_id %}faded-video{% endif %}"
+                            data-bs-toggle="tooltip"
+                            title="{% if quiz_video_id and video.id > quiz_video_id %}Complete the quiz for the previous video first{% endif %}">
+                            <div class="d-flex align-items-center me-auto mb-4 mb-md-0">
+                                <div class="text-secondary d-flex">
+                                    <i class="fa-brands fa-youtube" style="color: red;"></i>
+                                </div>
+                                {% if not quiz_video_id or video.id <= quiz_video_id %} <a href="?lecture={{video.id}}">
+                                    <div class="ms-4">{{ video.title }}</div>
+                                    </a>
+                                    {% else %}
+                                    <span class="ms-4 text-muted">{{ video.title }}</span>
+                                    {% endif %}
+                            </div>
+
+                            <div class="d-flex align-items-center overflow-auto overflow-md-visible flex-shrink-all">
+                                <div class="badge btn-blue-soft me-5 font-size-sm fw-normal py-2">{{ video.time_duration}} min</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+
+    </script>
+
+    <div class="container">
+        <div class="row mb-11">
+            <div class="col-lg-11 col-wd-12 ms-lg-auto pt-11 pt-lg-8">
+                <h2 class="font-size-xl mb-6">
+                    {{video.title}}
+                </h2>
+
+                <video controls id="video-{{ video.id }}" class="rounded shadow-light-lg">
+                    <source src="/{{ video.video_file }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+
+
+
+                <h3 class="">Course Description</h3>
+                <p class="mb-6 line-height-md">{{course.description}}</p>
+                <p class="collapse mb-6 line-height-md" id="readcollapseExample">{{course.description}}.</p>
+                <a class="text-teal read-more h6 d-inline-block mb-8" data-bs-toggle="collapse"
+                    href="#readcollapseExample" role="button" aria-expanded="false" aria-controls="readcollapseExample">
+                    <span class="d-inline-flex align-items-center more">
+                        Read More
+                        <span
+                            class="d-flex align-items-center justify-content-center bg-teal rounded-circle ms-2 p-2 w-26p">
+                            <i class="fas fa-plus font-size-10 text-white"></i>
+                        </span>
+                    </span>
+                    <span class="d-inline-flex align-items-center less">
+                        Read Less
+                        <span
+                            class="d-flex align-items-center justify-content-center bg-teal rounded-circle ms-2 p-2 w-26p">
+                            <i class="fas fa-minus font-size-10 text-white"></i>
+                        </span>
+                    </span>
+                </a>
+
+                <div class="d-md-flex align-items-center justify-content-between mb-8">
+                    <a href="#"
+                        class="btn btn-teal d-flex align-items-center text-white mb-5 mb-md-0 btn-block mw-md-280p justify-content-center">
+                        <i class="fas fa-arrow-left font-size-xs"></i>
+                        <span class="ms-3">Introduction</span>
+                    </a>
+                    <a href="#"
+                        class="btn btn-teal d-flex align-items-center text-white btn-block mw-md-280p justify-content-center mt-0">
+                        <span class="me-3">Structure of the course</span>
+                        <i class="fas fa-arrow-right font-size-xs"></i>
+                    </a>
+                </div>
+
+                <div class="container mt-4 d-flex justify-content-center">
+                    <div class="quiz-section" style="max-width: 50%; width: 100%;">
+                        {% if quiz %}
+                        <div class="card border-primary shadow-sm">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0 text-white">Quiz Status</h5>
+                            </div>
+                            <div class="card-body">
+                                {% if user_quiz_score %}
+                                <p class="card-text font-weight-bold">
+                                    Your Score: {{ user_quiz_score.score }} / {{ user_quiz_score.total }}
+                                </p>
+                                <p class="card-text font-weight-bold">
+                                    Percentage: {{ user_quiz_score.percentage }}%
+                                </p>
+                                <button type="button" class="btn btn-outline-primary btn-lg mt-2" onclick="startQuiz()">
+                                    <i class="bi bi-arrow-repeat"></i> Reattempt Quiz
+                                </button>
+                                {% else %}
+                                <p class="card-text text-muted">Ready to test your knowledge? Click below to start the
+                                    quiz.</p>
+                                <button type="button" class="btn btn-primary btn-lg mt-2" onclick="startQuiz()">
+                                    <i class="bi bi-play-circle"></i> Take Quiz
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- first check video watch Modals -->
+<div class="modal fade" id="quizModalCheck" tabindex="-1" aria-labelledby="quizModalCheckLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quizModalCheckLabel">Quiz Time</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                You have already watched this video. Would you like to attempt the quiz now?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="startQuiz()">Attempt Quiz</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- after video watch Modal -->
+<div class="modal fade" id="quizModal" tabindex="-1" aria-labelledby="quizModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quizModalLabel">Quiz Time!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Congratulations! You've completed the video. Ready to take the quiz?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="startQuiz()">Start Quiz</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('video-{{ video.id }}').addEventListener('ended', function () {
+        // Send AJAX request when the video ends
+        fetch('/update_video_watch_status/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',  // Ensure CSRF token is rendered properly
+            },
+            body: JSON.stringify({
+                video_id: '{{ video.id }}',
+                user_id: '{{ user.id }}'  // Optional: Pass user ID if needed for tracking
+            })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not OK');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Video watch status updated:', data);
+                var quizModal = new bootstrap.Modal(document.getElementById('quizModal'), {
+                    backdrop: false // No backdrop // Disables closing the modal with the keyboard
+                });
+                quizModal.show();
+            })
+            .catch(error => console.error('Error:', error));
+    });
+    function startQuiz() {
+        // Redirect to the quiz page
+        window.location.href = '/quiz/{{ video.id }}/';
+    }
+    window.addEventListener('load', function () {
+        // Get video ID and user ID dynamically (you can pass this via context in your template)
+        const videoId = '{{ video.id }}'; // Make sure video ID is passed correctly in your template
+        const userId = '{{ user.id }}'; // Make sure user ID is passed correctly in your template
+
+        // Send AJAX request to check if the video has been watched and if it has a quiz
+        fetch('/check_video_watch_status/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',  // Django CSRF token
+            },
+            body: JSON.stringify({
+                video_id: videoId,
+                user_id: userId,
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'watched') {
+                    // If video is watched, show the modal asking to attempt the quiz
+                    $('#quizModalCheck').modal('show');
+                } else if (data.status === 'no_quiz') {
+                    // If no quiz is associated with the video, do nothing or show a message if necessary
+                    console.log(data.message);  // Optionally show a message or log it
+                } else if (data.status === 'quiz_attempted') {
+                    // If the user has already attempted the quiz, show a message or take other actions
+                    alert('You have already attempted the quiz.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    });
+
+
+</script>
+{% endblock content %}
